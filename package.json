@@ -1,0 +1,8 @@
+{
+  "name": "richtext-editor",
+  "version": "1.0.0",
+  "description": "This is a richtext editor",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true
+}

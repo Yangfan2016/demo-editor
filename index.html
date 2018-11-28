@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Y-Editor</title>
+    <link rel="stylesheet" href="./src/css/main.css" />
+</head>
+
+<body>
+    <div class="app">
+        <button id="btnBoldText">Bold</button>
+        <button id="btnItalicText">Italic</button>
+        <button id="btnUnderlineText">Underline</button>
+        <button id="btnStrikeThroughText">StrikeThrough</button>
+
+        <label>Heading</label>
+        <select name="" id="btnHeadingText">
+            <option value="P">P</option>
+            <option value="H1">H1</option>
+            <option value="H2">H2</option>
+            <option value="H3">H3</option>
+            <option value="H4">H4</option>
+            <option value="H5">H5</option>
+            <option value="H6">H6</option>
+        </select>
+        <label>FontSize</label>
+        <select name="" id="btnFontSizeText">
+            <option value="1">x-small</option>
+            <option value="2">small</option>
+            <option value="3" selected>normal</option>
+            <option value="4">large</option>
+            <option value="5">x-large</option>
+            <option value="6">xx-large</option>
+            <option value="7">xxx-large</option>
+        </select>
+        <label>FontName</label>
+        <select name="" id="btnFontNameText">
+            <option value="SimSun">宋体</option>
+            <option value="Microsoft Yahei" selected>微软雅黑</option>
+            <option value="Arial">Arial</option>
+            <option value="Tahoma">Tahoma</option>
+            <option value="Verdana">Verdana</option>
+        </select>
+        <label>ForeColor</label>
+        <select name="" id="btnForeColorText">
+            <option value="#000">black</option>
+            <option value="#fff">white</option>
+            <option value="#f00">red</option>
+            <option value="#0f0">green</option>
+            <option value="#00f">blue</option>
+        </select>
+        <label>BackColor</label>
+        <select name="" id="btnBackColorText">
+            <option value="#000">black</option>
+            <option value="#fff" selected>white</option>
+            <option value="#f00">red</option>
+            <option value="#0f0">green</option>
+            <option value="#00f">blue</option>
+        </select>
+        <button id="btnHiliteColor">HiliteColor</button>
+
+        <button id="btnCreateLink">CreateLink</button>
+        <button id="btnUnlink">Unlink</button>
+        <button id="btnBlockQuote">BlockQuote</button>
+        <button id="btnRemoveFormat">RemoveFormat</button>
+        <button id="btnInsertHTML">InsertHTML</button>
+        <button id="btnInsertText">InsertText</button>
+        <button id="btnInsertOrderedList">InsertOrderedList</button>
+        <button id="btnInsertUnorderedList">InsertUnorderedList</button>
+
+        <button id="btnIndent">Indent</button>
+        <button id="btnOutdent">Outdent</button>
+        <button id="btnJustifyCenter">JustifyCenter</button>
+        <button id="btnJustifyFull">JustifyFull</button>
+        <button id="btnJustifyLeft">JustifyLeft</button>
+        <button id="btnJustifyRight">JustifyRight</button>
+
+        <button id="btnSelectAll">SelectAll</button>
+        <button id="btnCutText">Cut</button>
+        <button id="btnCopyText">Copy</button>
+        <button id="btnPasteText">Paste</button>
+        <button id="btnUndo">Undo</button>
+        <button id="btnRedo">Redo</button>
+        <div class="editorbox" id="editor" contenteditable="true"></div>
+    </div>
+    <script src="./src/index.js"></script>
+    <script>
+        let editorEle = document.getElementById("editor");
+
+        // Bold
+        btnBoldText.addEventListener("click", ev => {
+            document.execCommand("bold");
+        });
+        // Italic
+        btnItalicText.addEventListener("click", function () {
+            document.execCommand("italic");
+        });
+        // Underline
+        btnUnderlineText.addEventListener("click", function () {
+            document.execCommand("underline");
+        });
+        // StrikeThrough
+        btnStrikeThroughText.addEventListener("click", function () {
+            document.execCommand("strikeThrough");
+        });
+        // Heading
+        btnHeadingText.addEventListener("change", function () {
+            let headLevel = this.value;
+            // document.execCommand("heading",false,headLevel); // [only firefox]
+            document.execCommand("formatBlock", false, headLevel);
+        });
+        // FontSize
+        btnFontSizeText.addEventListener("change", function () {
+            let textLevel = this.value;
+            document.execCommand("fontSize", false, textLevel);
+        });
+        // FontName
+        btnFontNameText.addEventListener("change", function () {
+            let fontFamily = this.value;
+            document.execCommand("fontName", false, fontFamily);
+        });
+        // ForeColor
+        btnForeColorText.addEventListener("change", function () {
+            let foreColor = this.value;
+            document.execCommand("foreColor", false, foreColor);
+        });
+        // BackColor
+        btnBackColorText.addEventListener("change", function () {
+            let backColor = this.value;
+            document.execCommand("backColor", false, backColor);
+        });
+        // Cut
+        btnCutText.addEventListener("click", function () {
+            document.execCommand("cut");
+        });
+        // InsertHTML
+        btnInsertHTML.addEventListener("click", function () {
+            document.execCommand("insertHTML", false, "<h2>This a text of H2</h2>");
+        });
+        // InsertText
+        btnInsertText.addEventListener("click", function () {
+            document.execCommand("insertText", false, "<h2>This a text of H2</h2>");
+        });
+        // InsertOrderedList
+        btnInsertOrderedList.addEventListener("click", function () {
+            document.execCommand("insertOrderedList");
+        });
+        // InsertUnorderedList
+        btnInsertUnorderedList.addEventListener("click", function () {
+            document.execCommand("insertUnorderedList");
+        });
+        // CreateLink
+        btnCreateLink.addEventListener("click", function () {
+            let link = prompt("Tip", "http://");
+            document.execCommand("createLink", false, link);
+        });
+        // Unlink
+        btnUnlink.addEventListener("click", function () {
+            document.execCommand("unlink");
+        });
+        // BlockQuote
+        btnBlockQuote.addEventListener("click", function () {
+            // 判断是否有选区
+            if (getSelection().rangeCount === 0) {
+                return;
+            }
+            // 判断是否已经格式了
+            let container = getSelection().getRangeAt(0).commonAncestorContainer;
+
+            while (container.tagName !== "BODY") {
+                if (container.tagName === "BLOCKQUOTE") {
+                    document.execCommand("formatBlock", false, "P");
+                    return;
+                }
+                container = container.parentNode;
+            }
+
+            // IE浏览器仅仅支持标题标签 H1 - H6, ADDRESS, 和 PRE,使用时还必须包含标签分隔符 < >, 例如 "<H1>"
+            document.execCommand("formatBlock", false, "BLOCKQUOTE");
+        });
+        // RemoveFormat
+        btnRemoveFormat.addEventListener("click", function () {
+            document.execCommand("removeFormat");
+        });
+        // SelectAll
+        btnSelectAll.addEventListener("click", function () {
+            document.execCommand("selectAll");
+        });
+        // Indent
+        btnIndent.addEventListener("click", function () {
+            document.execCommand("indent");
+        });
+        // Outdent
+        btnOutdent.addEventListener("click", function () {
+            document.execCommand("outdent");
+        });
+        // JustifyCenter
+        btnJustifyCenter.addEventListener("click", function () {
+            document.execCommand("justifyCenter");
+        });
+        // JustifyFull
+        btnJustifyFull.addEventListener("click", function () {
+            document.execCommand("justifyFull");
+        });
+        // JustifyLeft
+        btnJustifyLeft.addEventListener("click", function () {
+            document.execCommand("justifyLeft");
+        });
+        // JustifyRight
+        btnJustifyRight.addEventListener("click", function () {
+            document.execCommand("justifyRight");
+        });
+        // HiliteColor
+        btnHiliteColor.addEventListener("click", function () {
+            document.execCommand("hiliteColor", false, "#080")
+        });
+        // Copy 
+        btnCopyText.addEventListener("click", function () {
+            document.execCommand("copy");
+        });
+        // Paste [no surpport]
+        btnPasteText.addEventListener("click", function () {
+            editorEle.focus();
+            document.execCommand("paste");
+        });
+        // Undo
+        btnUndo.addEventListener("click", function () {
+            document.execCommand("undo");
+        });
+        // Redo
+        btnRedo.addEventListener("click", function () {
+            document.execCommand("redo");
+        });
+
+        let oldRange;
+
+        editorEle.addEventListener("keyup", ev => {
+            // 判断是否有选区
+            let selection = getSelection();
+            if (selection.rangeCount === 0) {
+                return;
+            }
+            // 判断是否已经格式了
+            let range = selection.getRangeAt(0);
+            // 非首字母回车，脱离blockquote块 [BUG](在 shift+enter 出现)
+            if (ev.keyCode === 13) {
+                if (oldRange && oldRange.startOffset === 0) return;
+
+                let container = range.commonAncestorContainer;
+
+                while (container.tagName !== "BODY") {
+                    if (container.tagName === "BLOCKQUOTE") {
+                        document.execCommand("formatBlock", false, "P");
+                        return;
+                    }
+                    container = container.parentNode;
+                }
+            }
+            oldRange = range;
+        });
+
+    </script>
+</body>
+
+</html>
