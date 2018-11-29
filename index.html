@@ -11,6 +11,10 @@
 
 <body>
     <div class="app">
+        <!-- helpers -->
+        <input type="file" id="fileInput" hidden />
+        <!-- helpers end -->
+
         <button id="btnBoldText">Bold</button>
         <button id="btnItalicText">Italic</button>
         <button id="btnUnderlineText">Underline</button>
@@ -66,8 +70,13 @@
         <button id="btnUnlink">Unlink</button>
         <button id="btnBlockQuote">BlockQuote</button>
         <button id="btnRemoveFormat">RemoveFormat</button>
+
+        <button id="btnInsertHorizontalRule">InsertHorizontalRule</button>
         <button id="btnInsertHTML">InsertHTML</button>
         <button id="btnInsertText">InsertText</button>
+        <button id="btnInsertImage">
+            <label for="fileInput">InsertImage</label>
+        </button>
         <button id="btnInsertOrderedList">InsertOrderedList</button>
         <button id="btnInsertUnorderedList">InsertUnorderedList</button>
 
@@ -88,7 +97,58 @@
     </div>
     <script src="./src/index.js"></script>
     <script>
+        // helpers
+        let bus = (function () {
+            let listeners = {};
+            function on(type, cb, isOnce) {
+                if (typeof cb !== "function") return;
+                if (!listeners[type]) {
+                    listeners[type] = [cb];
+                } else {
+                    listeners[type].push(cb);
+                }
+                cb.once = !!isOnce;
+            }
+            function one(type, cb) {
+                on(type, cb, true);
+            }
+            function emit(type, data) {
+                let isEmpty = Object.keys(listeners).length === 0;
+                if (isEmpty) return;
+                isEmpty = !listeners[type] || listeners[type].length === 0;
+                if (isEmpty) return;
+                listeners[type].forEach(function (cb, n, arr) {
+                    if (cb) {
+                        cb(data);
+                        if (cb.once) arr.splice(n, 1);
+                    }
+                });
+            }
+            function off(type, cb) {
+                let isEmpty = Object.keys(listeners).length === 0;
+                if (isEmpty) return;
+                isEmpty = !listeners[type] || listeners[type].length === 0;
+                if (isEmpty) return;
+                if (cb === undefined) return listeners[type] = null;
+                listeners[type].forEach(function (oldCb, n, arr) {
+                    if (oldCb === cb) {
+                        arr.splice(n, 1);
+                    }
+                });
+            }
+            return {
+                on,
+                one,
+                emit,
+                off,
+            }
+        }());
+
+
+
         let editorEle = document.getElementById("editor");
+        // init
+        editorEle.focus();
 
         // Bold
         btnBoldText.addEventListener("click", ev => {
@@ -136,6 +196,10 @@
         btnCutText.addEventListener("click", function () {
             document.execCommand("cut");
         });
+        // InsertHorizontalRule
+        btnInsertHorizontalRule.addEventListener("click", function () {
+            document.execCommand("insertHorizontalRule");
+        });
         // InsertHTML
         btnInsertHTML.addEventListener("click", function () {
             document.execCommand("insertHTML", false, "<h2>This a text of H2</h2>");
@@ -143,6 +207,13 @@
         // InsertText
         btnInsertText.addEventListener("click", function () {
             document.execCommand("insertText", false, "<h2>This a text of H2</h2>");
+        });
+        // InsertImage
+        btnInsertImage.addEventListener("click", function () {
+            bus.one("get-image", function (imgSrc) {
+                editorEle.focus();
+                let res = document.execCommand("insertImage", false, imgSrc);
+            });
         });
         // InsertOrderedList
         btnInsertOrderedList.addEventListener("click", function () {
@@ -262,6 +333,15 @@
             oldRange = range;
         });
 
+        fileInput.addEventListener("change", ev => {
+            let file = ev.target.files[0];
+            let reader = new FileReader();
+            reader.addEventListener("load", ev => {
+                let res = ev.target.result;
+                bus.emit("get-image", res);
+            });
+            reader.readAsDataURL(file);
+        });
     </script>
 </body>
 
